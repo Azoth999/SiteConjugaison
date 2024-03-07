@@ -1,0 +1,1040 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>Conjugaison active</title>
+
+		<!-- Bootstrap -->
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="assets/css/font-awesome.min.css">
+		<!-- Theme -->
+		<link href="assets/css/freelancer.css" rel="stylesheet">
+
+		<!-- Custom CSS -->
+		<style>
+			body{
+				background-color: #fbf7df;
+			}
+
+			.btn-square{
+				width: 10em;
+				height: 10em;
+				word-wrap: break-word;
+				white-space: unset;
+				margin: 1em;
+			}
+			
+			.btn-container{
+				display: inline-block;
+				position: relative;
+				border-bottom: #00c6a0 8px solid;
+				padding: .5em;
+				width: auto;
+				height: auto;
+				word-wrap: break-word;
+				white-space: unset;
+				margin: .5em;
+				color: #00c6a0;
+				font-weight: bold;
+				font-size: 18px;
+			}
+
+			#puzzle-table{
+				background: #fff;
+			}
+
+			#puzzle-table tr th,
+			#puzzle-table tr td{
+				/*text-align: center;*/
+				vertical-align: middle;
+				padding: 20px;
+			}
+			#puzzle-table tr{
+				border: #ddd 2px solid;
+			}
+			#puzzle-table tr:hover{
+				cursor: pointer;
+				border-color: #d1e9f9;
+			}
+			#puzzle-table tr.active>td{
+				background: #d1e9f9;
+			}
+			#puzzle-table tr.active>td:first-child{
+				font-weight: bold;
+				font-size: 1.2em;
+			}
+
+			#puzzle-table tr td input{
+				pointer-events:none;
+				background: #ddd;
+				border-bottom: 2px solid #333;
+				border-left: none;
+				border-top: none;
+				border-right: none;
+				margin: 0 5px;
+			}
+			#puzzle-table tr.active td input{
+				pointer-events:auto;
+				background: rgba(255, 255, 255,.7);
+			}
+
+			#puzzle-table tr.success>td{
+				background: rgba(96, 203, 149, .7);
+			}
+			/*#puzzle-table tr.success:after{
+				font-family: FontAwesome;
+				content: "\f00c";
+				font-size: 50px;
+				top: 35px;
+				right: 30px;
+				position: absolute;
+			}*/
+
+			#puzzle-wrapper{
+				margin: 20 auto;
+				text-align: center;
+			}
+			#puzzle-wrapper .puzzle-pieces-title{
+				text-align: left;
+				padding-top: 10px;
+				color: #5f5c5c;
+			}
+			#puzzle-wrapper .puzzle-pieces-items{
+				text-align: left;
+				padding: 10px;
+			}
+
+			#puzzle-wrapper .puzzle-pieces-items .choice{
+				/*height: 100%;*/
+				height: auto;
+				margin: 0 1em;
+				padding: 0.5em;
+				width: 5em;
+				border: none;
+				text-transform: uppercase;
+			}
+			#puzzle-wrapper .puzzle-pieces-items .choice.disabled {
+				cursor: not-allowed;
+				filter: alpha(opacity=25);
+				-webkit-box-shadow: none;
+				box-shadow: none;
+				opacity: .25;
+			}
+
+			#puzzle-wrapper #puzzle-pieces-wrapper{
+				position: fixed;
+				top: 0px;
+				left: 0;
+				width: 100%;
+				margin: 0;
+				padding: 0;
+				background: #fff;
+				z-index: 99;
+
+				-webkit-transition: top .4s cubic-bezier(0.64, 0.57, 0.67, 1.53);
+				-moz-transition: top .4s cubic-bezier(0.64, 0.57, 0.67, 1.53);
+				-o-transition: top .4s cubic-bezier(0.64, 0.57, 0.67, 1.53);
+				transition: top .4s cubic-bezier(0.64, 0.57, 0.67, 1.53);
+			}
+			#puzzle-wrapper #puzzle-pieces-wrapper.off-screen{
+				top: -300px;
+			}
+
+			#puzzle-wrapper #puzzle-pieces-wrapper #puzzle-pieces-toggle{
+				width: 100%;
+				background: #5f5c5c;
+				border-bottom: solid 3px #5f5c5c;
+				margin: 0;
+				padding: 0;
+			}
+			#puzzle-wrapper #puzzle-pieces-wrapper #puzzle-pieces-toggle a{
+				display: block;
+				width: 100%;
+				height: auto;
+				color: #fff;
+				padding: 5px;
+			}
+			#puzzle-wrapper #puzzle-pieces-wrapper #puzzle-pieces-toggle a:hover{
+				color: #5f5c5c;
+				background: #e0e0e0;
+			}
+
+			#puzzle-wrapper #puzzle-pieces-wrapper #puzzle-pieces-tense{
+				border-bottom: solid 3px #5f5c5c;
+				margin: 0;
+				padding: 0;
+			}
+			#puzzle-wrapper #puzzle-pieces-wrapper #puzzle-pieces-tense .choice{
+				background: #F06060;
+			}
+
+			#puzzle-wrapper #puzzle-pieces-wrapper #puzzle-pieces-pronoun{
+				margin: 0;
+				padding: 0;
+			}
+			#puzzle-wrapper #puzzle-pieces-wrapper #puzzle-pieces-pronoun .choice{
+				background: #5EA592;
+			}
+
+
+			#puzzle-wrapper #puzzle-pieces-wrapper .choice.ready{
+				border: 6px solid #d1e9f9;
+			}
+
+			.puzzle-container {
+				position: relative;
+				height: 6em;
+				width: 21em;
+				margin: 0;
+			}
+
+			.puzzle {
+				display: block;
+				width: auto;
+				height: 6em;
+				margin: 0;
+				top:0;
+				position: absolute;
+				text-transform: uppercase;
+
+				-webkit-transition: all .5s ease-out;
+				-moz-transition: all .5s ease-out;
+				-o-transition: all .5s ease-out;
+				transition: all .5s ease-out;
+			}
+
+			.verb.puzzle {
+				width: 6em;
+				left: 0;
+			}
+
+			.tense.puzzle {
+				width: 8.9em;
+				left: 6em;
+			}
+			.tense.puzzle.puzzle-connected {
+				left: 4.56em;
+			}
+
+			.pronoun.puzzle {
+				width: 6em;
+				left: 15em;
+			}
+			.pronoun.puzzle.puzzle-connected {
+				left: 12.05em;
+			}
+
+			.puzzle.grayscale {
+				cursor: pointer;
+				-webkit-filter: grayscale(50%);
+				-moz-filter: grayscale(50%);
+				-ms-filter: grayscale(50%);
+				-o-filter: grayscale(50%);
+				filter: grayscale(50%);
+				filter: gray; /* IE 6-9 */
+			}
+
+			.puzzle.grayscale:hover {
+				cursor: pointer;
+				-webkit-filter: grayscale(15%);
+				-moz-filter: grayscale(15%);
+				-ms-filter: grayscale(15%);
+				-o-filter: grayscale(15%);
+				filter: grayscale(15%);
+				filter: #bababa; /* IE 6-9 */
+			}
+
+			.puzzle .piece{
+				position: absolute;
+				width: 100%;
+				z-index: 1;
+			}
+
+			.puzzle .text {
+				display: inline-block;
+				position: absolute;
+				font-size: 1em;
+				font-family: Arial, sans-serif;
+				font-weight: bold;
+				text-align: center;
+				z-index: 10;
+				top: 2.2em;
+				width: 100%;
+			}
+
+			.verb.puzzle .text {
+				color: #fff;
+				padding-right: 22px;
+			}
+			.tense.puzzle .text {
+				color: #fff;
+			}
+			.pronoun.puzzle .text {
+				color: #fff;
+				padding-left: 10px;
+			}
+
+			#modal-tense .choice {
+				background-color: #e8003d;
+			}
+
+			#modal-pronoun .choice {
+				background-color: #09b586;
+			}
+		</style>
+	</head>
+	<body id="page-top">
+
+		<section id="portfolio">
+			<div class="container">
+				<h2 id="page-title" class="text-center"><img src="assets/img/logo.png" /></h2>
+				<hr class="star-primary">
+				<div class="row">
+					<!-- form status -->
+					<input id="general-step" type="hidden" value="0" />
+
+					<div id="infos-container" class="col-md-12 text-center"></div>
+
+					<div id="tense-wrapper" class="col-md-12 text-center">
+						<p class="lead">-1-<br>Choisis le temps de conjugaison.</p>
+						<div id="tense-list-container" class="text-center">
+						</div>
+					</div>
+
+					<div id="difficulty-wrapper" class="col-md-12 text-center hidden">
+						<p class="lead">-2-<br>Choisis la difficulté.</p>
+						<div id="difficulty-list-container" class="text-center">
+						</div>
+					</div>
+
+					<div id="puzzle-wrapper" class="col-md-12 text-center hidden">
+						<div id="puzzle-pieces-wrapper" class="row off-screen">
+							<div id="puzzle-pieces-tense" class="col-md-12 row">
+								<div class="col-md-2 puzzle-pieces-title">
+									<p class="text-center"><small>Terminaisons de<br></small><b>TEMPS</b></p>
+								</div>
+								<div class="col-md-10 puzzle-pieces-items">
+								</div>
+							</div>
+							<div id="puzzle-pieces-pronoun" class="col-md-12 row">
+								<div class="col-md-2 puzzle-pieces-title">
+									<p class="text-center"><small>Terminaisons de<br></small><b>PERSONNE</b></p>
+								</div>
+								<div class="col-md-10 puzzle-pieces-items">
+								</div>
+							</div>
+							<div id="puzzle-pieces-toggle" class="col-md-12 row text-center">
+								<a href="#" class="toggle-up"><i class="fa fa-2x fa-caret-square-o-up" aria-hidden="true"></i></a>
+							</div>
+						</div>
+						<p class="lead">-3-<br>Clique sur une personne, sélectionne les terminaisons ci-dessus puis complète la phrase avec le verbe écrit correctement.</p>
+							<div class="col-md-12 responsive">
+								<table id="puzzle-table" class="table table-bordered">
+									<tbody>
+										<!-- Dynamic loading -->
+									</tbody>
+								</table>
+							</div>
+					</div>
+
+				</div>
+			</div>
+		</section>
+
+		
+		<!-- Modal -->
+		<div id="successModal" class="modal modal-success fade" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Bien joué!</h4>
+					</div>
+					<div class="modal-body">
+						<p class="text-center" style="padding:15px">
+							<img style="max-width:80%;" src="assets/svg/success.svg" />
+							<br>
+							Tu peux maintenant t'exercer avec d’autres verbes et d’autres temps.<br>
+							Continue l'aventure <i>Conjugaison active</i> en cliquant ci-dessous.<br><br>
+							<button type="button" class="btn btn-info btn-block btn-lg" id="successModalReset">Rejouer</button>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="assets/js/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="assets/js/bootstrap.min.js"></script>
+
+		<!-- Custom JS -->
+		<script>
+			$(function () {
+				$('#general-step').val(0);
+				var runInterval = setInterval(function(){ run() }, 100);
+
+				function run(){
+					var currentStep = parseInt($('#general-step').val());
+					switch(currentStep){
+						case 1:
+							$('#tense-wrapper').addClass('hidden');
+							$('#difficulty-wrapper').removeClass('hidden');
+							break;
+						case 2:
+							$('#difficulty-wrapper').addClass('hidden');
+							$('#puzzle-wrapper').removeClass('hidden');
+							window.setTimeout(function(){
+								$("#puzzle-wrapper #puzzle-pieces-wrapper").removeClass('off-screen');
+								$('#page-title').css('margin-top', $("#puzzle-wrapper #puzzle-pieces-wrapper").css('height'));
+								/*$('html, body').animate({
+									scrollTop: $("#puzzle-wrapper #puzzle-pieces-wrapper").outerHeight(true)
+								}, 1000);*/
+							},500);
+
+							$('#general-step').val(3);
+							break;
+						case 3:
+							//finale step
+							clearInterval(runInterval);
+							break;
+					}//switch
+				}//run
+
+
+				var tenseIndexSelected = null;
+				var tenseList = [
+					{
+						name: "Présent",
+						end: 	["Ø"]
+					},
+					{
+						name: "Imparfait",
+						end: 	["ai"]
+					},
+					{
+						name: "Passé simple",
+						end: 	["a", "i", "u", "in"]
+					},
+					{
+						name: "Futur",
+						end: 	["r"]
+					},
+					{
+						name: "Conditionnel présent",
+						end: 	["rai"]
+					}
+				];
+
+				var verbIndexSelected = null;
+				var verbList = [
+					{
+						name: "Courir",
+						root: "Cour",
+						difficulty: 1,
+						conjugation: {
+							"Présent": [
+								"cours", "cours", "court",
+								"courons", "courez", "courent"
+							],
+							"Imparfait": [
+								"courais", "courais", "courait",
+								"courions", "couriez", "couraient"
+							],
+							"Passé simple": [
+								"courus", "courus", "courut",
+								"courûmes", "courûtes", "coururent"
+							],
+							"Futur": [
+								"courrai", "courras", "courra",
+								"courrons", "courrez", "courront"
+							],
+							"Conditionnel présent": [
+								"courrais", "courrais", "courrait",
+								"courrions", "courriez", "courraient"
+							],
+						}
+					},
+					{
+						name: "Mordre",
+						root: "Mord",
+						difficulty: 1,
+						conjugation: {
+							"Présent": [
+								"mords", "mords", "mord",
+								"mordons", "mordez", "mordent"
+							],
+							"Imparfait": [
+								"mordais", "mordais", "mordait",
+								"mordions", "mordiez", "mordaient"
+							],
+							"Passé simple": [
+								"mordis", "mordis", "mordit",
+								"mordîmes", "mordîtes", "mordirent"
+							],
+							"Futur": [
+								"mordrai", "mordras", "mordra",
+								"mordrons", "mordrez", "mordront"
+							],
+							"Conditionnel présent": [
+								"mordrais", "mordrais", "mordrait",
+								"mordrions", "mordriez", "mordraient"
+							],
+						}
+					},
+					{
+						name: "Finir",
+						root: "Fin",
+						difficulty: 2,
+						conjugation: {
+							"Présent": [
+								"finis", "finis", "finit",
+								"finissons", "finissez", "finissent"
+							],
+							"Imparfait": [
+								"finissais", "finissais", "finissait",
+								"finissions", "finissiez", "finissaient"
+							],
+							"Passé simple": [
+								"finis", "finis", "finit",
+								"finîmes", "finîtes", "finirent"
+							],
+							"Futur": [
+								"finirai", "finiras", "finira",
+								"finirons", "finirez", "finiront"
+							],
+							"Conditionnel présent": [
+								"finirais", "finirais", "finirait",
+								"finirions", "finiriez", "finiraient"
+							],
+						}
+					},
+					{
+						name: "Manger",
+						root: "Mang",
+						difficulty: 2,
+						conjugation: {
+							"Présent": [
+								"mange", "manges", "mange",
+								"mangeons", "mangez", "mangent"
+							],
+							"Imparfait": [
+								"mangeais", "mangeais", "mangeait",
+								"mangions", "mangiez", "mangeaient"
+							],
+							"Passé simple": [
+								"mangeai", "mangeas", "mangea",
+								"mangeâmes", "mangeâtes", "mangèrent"
+							],
+							"Futur": [
+								"mangerai", "mangeras", "mangera",
+								"mangerons", "mangerez", "mangeront"
+							],
+							"Conditionnel présent": [
+								"mangerais", "mangerais", "mangerait",
+								"mangerions", "mangeriez", "mangeraient"
+							],
+						}
+					},
+					{
+						name: "Venir",
+						root: "Ven",
+						difficulty: 3,
+						conjugation: {
+							"Présent": [
+								"viens", "viens", "vient",
+								"venons", "venez", "viennent"
+							],
+							"Imparfait": [
+								"venais", "venais", "venait",
+								"venions", "veniez", "venaient"
+							],
+							"Passé simple": [
+								"vins", "vins", "vint",
+								"vînmes", "vîntes", "vinrent"
+							],
+							"Futur": [
+								"viendrai", "viendras", "viendra",
+								"viendrons", "viendrez", "viendront"
+							],
+							"Conditionnel présent": [
+								"viendrais", "viendrais", "viendrait",
+								"viendrions", "viendriez", "viendraient"
+							],
+						}
+					},
+					{
+						name: "Acquérir",
+						root: "Acquér",
+						difficulty: 3,
+						conjugation: {
+							"Présent": [
+								"acquiers", "acquiers", "acquiert",
+								"acquérons", "acquérez", "acquièrent"
+							],
+							"Imparfait": [
+								"acquérais", "acquérais", "acquérait",
+								"acquérions", "acquériez", "acquéraient"
+							],
+							"Passé simple": [
+								"acquis", "acquis", "acquit",
+								"acquîmes", "acquîtes", "acquirent"
+							],
+							"Futur": [
+								"acquerrai", "acquerras", "acquerra",
+								"acquerrons", "acquerrez", "acquerront"
+							],
+							"Conditionnel présent": [
+								"acquerrais", "acquerrais", "acquerrait",
+								"acquerrions", "acquerriez", "acquerraient"
+							],
+						}
+					},
+				];
+				
+				var contextSentenceList = {
+					"Présent": {
+						"Courir": [
+							"Aujourd’hui, ",
+							"avec des chaussures."
+						],
+						"Mordre": [
+							"Aujourd’hui, ",
+							"très fort."
+						],
+						"Finir": [
+							"Aujourd’hui, ",
+							"le travail."
+						],
+						"Manger": [
+							"Aujourd’hui, ",
+							"à la cantine."
+						],
+						"Venir": [
+							"Aujourd’hui, ",
+							"le voir."
+						],
+						"Acquérir": [
+							"Aujourd’hui, ",
+							"une voiture."
+						]
+					},
+					"Imparfait": {
+						"Courir": [
+							"Avant, ",
+							"avec des chaussures."
+						],
+						"Mordre": [
+							"Avant, ",
+							"très fort."
+						],
+						"Finir": [
+							"Avant, ",
+							"le travail."
+						],
+						"Manger": [
+							"Avant, ",
+							"à la cantine."
+						],
+						"Venir": [
+							"Avant, ",
+							"le voir."
+						],
+						"Acquérir": [
+							"Avant, ",
+							"une voiture."
+						]
+					},
+					"Passé simple": {
+						"Courir": [
+							"Dès l'âge de six ans, ",
+							"avec des chaussures."
+						],
+						"Mordre": [
+							"Dès l'âge de six ans, ",
+							"très fort."
+						],
+						"Finir": [
+							"Dès l'âge de six ans, ",
+							"le travail."
+						],
+						"Manger": [
+							"Dès l'âge de six ans, ",
+							"à la cantine."
+						],
+						"Venir": [
+							"Dès l'âge de six ans, ",
+							"le voir."
+						],
+						"Acquérir": [
+							"Dès l'âge de six ans, ",
+							"une voiture."
+						]
+					},
+					"Futur": {
+						"Courir": [
+							"Demain, ",
+							"avec des chaussures."
+						],
+						"Mordre": [
+							"Demain, ",
+							"très fort."
+						],
+						"Finir": [
+							"Demain, ",
+							"le travail."
+						],
+						"Manger": [
+							"Demain, ",
+							"à la cantine."
+						],
+						"Venir": [
+							"Demain, ",
+							"le voir."
+						],
+						"Acquérir": [
+							"Demain, ",
+							"une voiture."
+						]
+					},
+					"Conditionnel présent": {
+						"Courir": [
+							"S'il pleuvait, ",
+							"avec des chaussures."
+						],
+						"Mordre": [
+							"Si la pomme était dure, ",
+							"très fort."
+						],
+						"Finir": [
+							"S'il était facile, ",
+							"le travail."
+						],
+						"Manger": [
+							"Si le menu était intéressant, ",
+							"à la cantine."
+						],
+						"Venir": [
+							"Si tu voulais, ",
+							"le voir."
+						],
+						"Acquérir": [
+							"Si c'était moins cher, ",
+							"une voiture."
+						]
+					}
+				};
+
+				var pronounList = [
+					{
+						name: "Je / J'",
+						end: 	["Ø", "S"]
+					},
+					{
+						name: "Tu",
+						end: 	["S"]
+					},
+					{
+						name: "Il / Elle",
+						end: 	["Ø", "T"]
+					},
+					{
+						name: "Nous",
+						end: 	["ONS", "MES"]
+					},
+					{
+						name: "Vous",
+						end: 	["EZ", "TES"]
+					},
+					{
+						name: "Ils / Elles",
+						end: 	["NT"]
+					}
+				];
+
+				var maxDifficulty = 1;
+				$.each(verbList, function( index, row ) {
+					if(row.difficulty > maxDifficulty){
+						maxDifficulty = row.difficulty;
+					}//if
+				});
+
+				/*
+				//Old version, difficulty boxes
+				//LoadDifficultyVerbs
+				for(var i = 1; i <= maxDifficulty; i++){
+					var diffVerbText = '';
+					$.each(verbList, function( index, row ) {
+						if(row.difficulty == i){
+							diffVerbText += row.name+'<br>';
+						}//if
+					});
+
+					$('#difficulty-list-container').append('<button type="button" class="btn btn-primary btn-square choice" data-id="'+i+'">'+i+'<br>-<br>'+diffVerbText+'</button>');
+				}//for
+
+				$.each(tenseList, function( index, row ) {
+					$('#tense-list-container').append('<button type="button" class="btn btn-primary btn-square choice" data-id="'+index+'">'+row.name+'</button>');
+				});
+
+
+				$('#difficulty-list-container .choice').click(function(e){
+					$('#difficulty-list-container .choice').addClass('disabled');
+					$(e.target).removeClass('disabled');
+					$(e.target).addClass('active');
+
+
+					var difficultySelectedVerbs = Array();
+					$.each(verbList, function( index, row ) {
+						if(row.difficulty == $(e.target).data('id')){
+							difficultySelectedVerbs.push(index);
+						}//if
+					});
+					verbIndexSelected = difficultySelectedVerbs[Math.floor(Math.random()*difficultySelectedVerbs.length)];
+					$('#infos-container').append('<h3 class="text-info text-uppercase"><small>Verbe & temps sélectionnés </small><br>'+verbList[verbIndexSelected].name+' - '+tenseList[tenseIndexSelected].name+'</h3>');
+
+					//Load Table
+					loadVerbTable(pronounList, verbList, verbIndexSelected);
+
+					//Choice Toggle
+					choiceToggleClick();
+
+					//Event on table row
+					$('#puzzle-table .puzzle-row').click(function(e){
+						pronounRowClick(e);
+					});
+					$('.puzzle-row input').focusin(function(e){
+						$(e.currentTarget).parents('.puzzle-row').get(0).click();
+					});
+					tenseClick();
+
+					//Validation
+					$('.verb-control').keyup(function(e){
+						verbControl(e);
+					});
+
+					//Init
+					$('#puzzle-row-0').click();
+
+					$('#general-step').val(2);
+				});
+				*/
+				
+				//Load Verbs
+				for(var i = 1; i <= maxDifficulty; i++){
+					var diffVerbHTML = '<div class="btn-container">Niv. '+i+'<br>-<br>';
+					$.each(verbList, function( index, row ) {
+						if(row.difficulty == i){
+							diffVerbHTML += '<button type="button" class="btn btn-primary btn-square choice" data-id="'+index+'">'+row.name+'</button>';
+						}//if
+					});
+					diffVerbHTML += '</div>';
+					
+					$('#difficulty-list-container').append(diffVerbHTML);
+				}//for
+				/*$.each(verbList, function( index, row ) {
+					$('#difficulty-list-container').append('<button type="button" class="btn btn-primary btn-square choice" data-id="'+index+'">'+row.difficulty+'<br>-<br>'+row.name+'</button>');
+				});*/
+
+				//Load Tenses
+				$.each(tenseList, function( index, row ) {
+					$('#tense-list-container').append('<button type="button" class="btn btn-primary btn-square choice" data-id="'+index+'">'+row.name+'</button>');
+				});
+
+				$('#difficulty-list-container .choice').click(function(e){
+					$('#difficulty-list-container .choice').addClass('disabled');
+					$(e.target).removeClass('disabled');
+					$(e.target).addClass('active');
+
+					verbIndexSelected = $(e.target).data('id');
+					$('#infos-container').append('<h3 class="text-info text-uppercase"><small>Verbe & temps sélectionnés </small><br>'+verbList[verbIndexSelected].name+' - '+tenseList[tenseIndexSelected].name+'</h3>');
+
+					//Load Table
+					loadVerbTable(pronounList, verbList, verbIndexSelected);
+
+					//Choice Toggle
+					choiceToggleClick();
+
+					//Event on table row
+					$('#puzzle-table .puzzle-row').click(function(e){
+						pronounRowClick(e);
+					});
+					$('.puzzle-row input').focusin(function(e){
+						$(e.currentTarget).parents('.puzzle-row').get(0).click();
+					});
+					tenseClick();
+
+					//Validation
+					$('.verb-control').keyup(function(e){
+						verbControl(e);
+					});
+
+					//Init
+					$('#puzzle-row-0').click();
+
+					$('#general-step').val(2);
+				});
+
+
+				$('#tense-list-container .choice').click(function(e){
+					$('#tense-list-container .choice').addClass('disabled');
+					$(e.target).removeClass('disabled');
+					$(e.target).addClass('active');
+
+					tenseIndexSelected = $(e.target).data('id');
+					$('#infos-container h3').append(' - '+$(e.target).html());
+
+					$('#puzzle-pieces-tense .puzzle-pieces-items').html('');
+					$.each(tenseList, function( indexTense, tense ) {
+						$.each(tenseList[indexTense].end, function( index, value ) {
+							$('#puzzle-pieces-tense .puzzle-pieces-items').append(
+								'<button type="button" class="btn btn-primary btn-square choice '+
+								(tenseIndexSelected!=indexTense?'disabled':'ready')+
+								' text-uppercase" data-target="'+$(e.currentTarget).attr('id')+'">'+value+'</button>'
+							);
+						});
+					});
+
+					$('#general-step').val(1);
+				});
+
+				function loadVerbTable(pronounList, verbList, verbIndexSelected){
+					$.each(pronounList, function( index, row ) {
+						$('#puzzle-table tbody').append(
+							'<tr class="puzzle-row" id="puzzle-row-'+index+'">'+
+							'<td class="col-md-2">'+row.name+'</td>'+
+							'<td class="col-md-3">'+
+							'<div class="puzzle-container">'+
+							'<div class="verb puzzle">'+
+							'<img class="piece" src="assets/svg/puzzle-left.svg" />'+
+							'<span class="text">'+verbList[verbIndexSelected].root.toUpperCase()+'</span>'+
+							'</div>'+
+							'<div class="tense puzzle grayscale" id="tense-puzzle-'+index+'">'+
+							'<img class="piece" src="assets/svg/puzzle-center.svg" />'+
+							'<span class="text"></span>'+
+							'</div>'+
+							'<div class="pronoun puzzle grayscale" id="pronoun-puzzle-'+index+'">'+
+							'<img class="piece" src="assets/svg/puzzle-right.svg" />'+
+							'<span class="text"></span>'+
+							'</div>'+
+							'</div>'+
+							'</td>'+
+							'<td class="col-md-7">'+
+							'<small>'+contextSentenceList[tenseList[tenseIndexSelected]['name']][verbList[verbIndexSelected]['name']][0]+
+							row.name+
+							' <input type="text" class="verb-control" id="verb-control-'+index+'" data-verb-id="'+verbIndexSelected+'"> '+
+							contextSentenceList[tenseList[tenseIndexSelected]['name']][verbList[verbIndexSelected]['name']][1]+'</small>'+
+							'</td>'+
+							/*'<td class="col-md-1"><i id="verb-valid-'+index+'" class="fa fa-times text-danger" aria-hidden="true"></i></td>'+*/
+							'</tr>'
+						);
+					});
+				}//loadVerbTable()
+
+				function pronounRowClick(e){
+					//Select clicked row
+					$('.puzzle-row').removeClass('active');
+					$(e.currentTarget).addClass('active');
+					$(e.currentTarget).find('input').focus();
+
+					//Update pronoun list
+					$('#puzzle-pieces-pronoun .puzzle-pieces-items').html('');
+					var pronounIndexSelected = $($(e.currentTarget).attr('id').split('-')).get(2);
+
+					var uniquePronounList = new Object();
+					$.each(pronounList, function( indexPronoun, pronoun ) {
+						$.each(pronoun.end, function( index, value ) {
+							if(!uniquePronounList[value] && indexPronoun != pronounIndexSelected){
+								uniquePronounList[value] = false;
+							}else if(indexPronoun == pronounIndexSelected){
+								uniquePronounList[value] = true;
+							}//else if
+						});
+					});
+
+					$.each(uniquePronounList, function( index, active ) {
+						$('#puzzle-pieces-pronoun .puzzle-pieces-items').append(
+							'<button type="button" class="btn btn-primary btn-square choice '+
+							(!active?'disabled':'ready')+
+							' text-uppercase" data-target="'+$(e.currentTarget).attr('id')+'">'+index+'</button>'
+						);
+					});
+
+					$('#puzzle-pieces-pronoun .puzzle-pieces-items .choice').not( ".disabled" ).click(function(e){
+						var targetRow = $('#puzzle-table .puzzle-row.active').get(0);
+						$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').removeClass('puzzle-connected');
+						window.setTimeout(function(){
+							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun .text').html($(e.currentTarget).html());
+							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').addClass('puzzle-connected');
+							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').removeClass('grayscale');
+						},200);
+					});
+				}//pronounRowClick(e)
+
+				function tenseClick(){
+					$('#puzzle-pieces-tense .puzzle-pieces-items .choice').not( ".disabled" ).click(function(e){
+						var targetRow = $('#puzzle-table .puzzle-row.active').get(0);
+						$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').removeClass('puzzle-connected');
+						window.setTimeout(function(){
+							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense .text').html($(e.currentTarget).html());
+							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').addClass('puzzle-connected');
+							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').removeClass('grayscale');
+						},200);
+					});
+				}//tenseClick(e)
+
+				function verbControl(e){
+					var targetRow = $('#puzzle-table .puzzle-row.active').get(0);
+					var pronounIndexSelected = $($(targetRow).attr('id').split('-')).get(2);
+					if($(e.currentTarget).val() == verbList[$(e.currentTarget).data('verb-id')]['conjugation'][tenseList[tenseIndexSelected].name][pronounIndexSelected]){
+						$(targetRow).addClass('success');
+						
+						//End of the game ?
+						var nbSuccess = $('#puzzle-table .success').length;
+						if(nbSuccess >= 6){  
+							$('#successModal #successModalReset').click(function() {location.reload();});
+							$('#successModal').modal({backdrop: 'static', keyboard: false});
+						}//if
+					}else{
+						$(targetRow).removeClass('success');
+					}//else
+				}//verbControl(e)
+
+				function choiceToggleClick(){
+					$('#puzzle-pieces-toggle a').click(function(e){
+						e.preventDefault();
+						if($(e.currentTarget).hasClass('toggle-up')){
+							$('#puzzle-pieces-tense, #puzzle-pieces-pronoun').hide('slow');
+							$(e.currentTarget).removeClass('toggle-up');
+							$(e.currentTarget).addClass('toggle-down');
+							$('#puzzle-pieces-toggle a i').removeClass('fa-caret-square-o-up');
+							$('#puzzle-pieces-toggle a i').addClass('fa-caret-square-o-down');
+						}else{
+							$('#puzzle-pieces-tense, #puzzle-pieces-pronoun').show('slow');
+							$(e.currentTarget).removeClass('toggle-down');
+							$(e.currentTarget).addClass('toggle-up');
+							$('#puzzle-pieces-toggle a i').removeClass('fa-caret-square-o-down');
+							$('#puzzle-pieces-toggle a i').addClass('fa-caret-square-o-up');
+						}//else
+
+						window.setTimeout(function(){
+							$("#puzzle-wrapper #puzzle-pieces-wrapper").removeClass('off-screen');
+							$('#page-title').css('margin-top', $("#puzzle-wrapper #puzzle-pieces-wrapper").css('height'));
+						},500);
+					});
+					
+					$('#puzzle-table .piece').click(function(e){
+						e.preventDefault();
+						if($('#puzzle-pieces-toggle a').hasClass('toggle-down')){
+							$('#puzzle-pieces-toggle a').click();
+						}//if
+					});
+				}//choiceToggleClick()
+			});
+		</script>
+	</body>
+</html>
