@@ -971,7 +971,8 @@
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun .text').html($(e.currentTarget).html());
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').addClass('puzzle-connected');
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').removeClass('grayscale');
-							checkPuzzleCompletion();	//ModifY: checkPuzzle call add
+							var rowId = $(this).closest('.puzzle-row').attr('id'); //ModifY5
+							checkPuzzleCompletion(rowId);	//ModifY: checkPuzzle call add
 						},200);
 					});
 				}//pronounRowClick(e)
@@ -984,7 +985,8 @@
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense .text').html($(e.currentTarget).html());
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').addClass('puzzle-connected');
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').removeClass('grayscale');
-							checkPuzzleCompletion();	//ModifY: checkPuzzle call add
+							var rowId = $(this).closest('.puzzle-row').attr('id');	//ModifY5
+							checkPuzzleCompletion(rowId);	//ModifY: checkPuzzle call add
 						},200);
 					});
 				}//tenseClick(e)
@@ -1037,14 +1039,13 @@
 					});
 				}//choiceToggleClick()
 
-				function checkPuzzleCompletion() {	//ModifY: Added function checkPuzzle
+				function checkPuzzleCompletion(rowId) {	//ModifY: Added function checkPuzzle
 				    let isComplete = false;
-				    $('#puzzle-table .puzzle-row').each(function() {	//Modify4
-					const rowId = $(this).attr('id'); // Récupère l'ID de la ligne
-					const verbText = $(this).find('.verb .text').text().trim();
-					const tenseText = $(this).find('.tense .text').text().trim();
-					const pronounText = $(this).find('.pronoun .text').text().trim();
-					const inputField = $(`#${rowId} .verb-control`); // Cible le champ de saisie spécifique
+				    const row = $(`#${rowId}`);		//Modify5
+				    const verbText = row.find('.verb .text').text().trim();
+				    const tenseText = row.find('.tense .text').text().trim();
+				    const pronounText = row.find('.pronoun .text').text().trim();
+				    const inputField = row.find('.verb-control');
 					    
 				        if (verbText || tenseText || pronounText) {
 				            isComplete = true;
