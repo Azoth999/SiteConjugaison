@@ -1038,22 +1038,24 @@
 				}//choiceToggleClick()
 
 				function checkPuzzleCompletion() {	//ModifY: Added function checkPuzzle
-				    let isComplete = true;
+				    let isComplete = false;
 				    $('#puzzle-table .puzzle-row').each(function() {
 				        const verbText = $(this).find('.verb .text').text().trim();
 				        const tenseText = $(this).find('.tense .text').text().trim();
 				        const pronounText = $(this).find('.pronoun .text').text().trim();
 				
-				        if (!verbText || !tenseText || !pronounText) {
-				            isComplete = false;
+				        if (verbText || tenseText || pronounText) {
+				            isComplete = true;
 				        }
-				    });
-				
+				    });		//ModifY2: Changed ! to = and isComplete = false -> true
+
 				    if (isComplete) {
 				        $('.verb-control').removeAttr('disabled');
 				    } else {
 				        $('.verb-control').attr('disabled', 'disabled');
 				    }
+				    
+
 				}
 
 			});
