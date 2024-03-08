@@ -1039,12 +1039,12 @@
 
 				function checkPuzzleCompletion() {	//ModifY: Added function checkPuzzle
 				    let isComplete = false;
-				    const activeRow = $('#puzzle-table .puzzle-row.active');
-    				    if (activeRow.length) {	//ModifY4: act only on puzzle-row.active
-				        const verbText = $(this).find('.verb .text').text().trim();
-				        const tenseText = $(this).find('.tense .text').text().trim();
-				        const pronounText = $(this).find('.pronoun .text').text().trim();
-					const inputField = $(this).find('.verb-control');	//ModifY3: added inputField, if(isComplete) modified accordingly
+				    $('#puzzle-table .puzzle-row').each(function() {	//Modify4
+					const rowId = $(this).attr('id'); // Récupère l'ID de la ligne
+					const verbText = $(this).find('.verb .text').text().trim();
+					const tenseText = $(this).find('.tense .text').text().trim();
+					const pronounText = $(this).find('.pronoun .text').text().trim();
+					const inputField = $(`#${rowId} .verb-control`); // Cible le champ de saisie spécifique
 					    
 				        if (verbText || tenseText || pronounText) {
 				            isComplete = true;
