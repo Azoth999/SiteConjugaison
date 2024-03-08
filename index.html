@@ -926,7 +926,7 @@
 							'<td class="col-md-7">'+
 							'<small>'+contextSentenceList[tenseList[tenseIndexSelected]['name']][verbList[verbIndexSelected]['name']][0]+
 							row.name+
-							' <input type="text" class="verb-control" id="verb-control-'+index+'" data-verb-id="'+verbIndexSelected+'"> '+
+							' <input type="text" class="verb-control" id="verb-control-'+index+'" data-verb-id="'+verbIndexSelected+'" disabled> '+	//ModifY: disabled add
 							contextSentenceList[tenseList[tenseIndexSelected]['name']][verbList[verbIndexSelected]['name']][1]+'</small>'+
 							'</td>'+
 							/*'<td class="col-md-1"><i id="verb-valid-'+index+'" class="fa fa-times text-danger" aria-hidden="true"></i></td>'+*/
@@ -971,6 +971,7 @@
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun .text').html($(e.currentTarget).html());
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').addClass('puzzle-connected');
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').removeClass('grayscale');
+							checkPuzzleCompletion();	//ModifY: checkPuzzle call add
 						},200);
 					});
 				}//pronounRowClick(e)
@@ -983,6 +984,7 @@
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense .text').html($(e.currentTarget).html());
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').addClass('puzzle-connected');
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').removeClass('grayscale');
+							checkPuzzleCompletion();	//ModifY: checkPuzzle call add
 						},200);
 					});
 				}//tenseClick(e)
@@ -1034,6 +1036,26 @@
 						}//if
 					});
 				}//choiceToggleClick()
+
+				function checkPuzzleCompletion() {	//ModifY: Added function checkPuzzle
+				    let isComplete = true;
+				    $('#puzzle-table .puzzle-row').each(function() {
+				        const verbText = $(this).find('.verb .text').text().trim();
+				        const tenseText = $(this).find('.tense .text').text().trim();
+				        const pronounText = $(this).find('.pronoun .text').text().trim();
+				
+				        if (!verbText || !tenseText || !pronounText) {
+				            isComplete = false;
+				        }
+				    });
+				
+				    if (isComplete) {
+				        $('.verb-control').removeAttr('disabled');
+				    } else {
+				        $('.verb-control').attr('disabled', 'disabled');
+				    }
+				}
+
 			});
 		</script>
 	</body>
