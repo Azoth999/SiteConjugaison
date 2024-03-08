@@ -1043,16 +1043,17 @@
 				        const verbText = $(this).find('.verb .text').text().trim();
 				        const tenseText = $(this).find('.tense .text').text().trim();
 				        const pronounText = $(this).find('.pronoun .text').text().trim();
-				
+					const inputField = $(this).find('.verb-control');	//ModifY3: added inputField, if(isComplete) modified accordingly
+					    
 				        if (verbText || tenseText || pronounText) {
 				            isComplete = true;
 				        }
 				    });		//ModifY2: Changed ! to = and isComplete = false -> true
 
 				    if (isComplete) {
-				        $('.verb-control').removeAttr('disabled');
+				        inputField.removeAttr('disabled');
 				    } else {
-				        $('.verb-control').attr('disabled', 'disabled');
+				        inputField.attr('disabled', 'disabled');
 				    }
 				    
 
