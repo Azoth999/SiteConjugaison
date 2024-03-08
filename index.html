@@ -1039,7 +1039,8 @@
 
 				function checkPuzzleCompletion() {	//ModifY: Added function checkPuzzle
 				    let isComplete = false;
-				    $('#puzzle-table .puzzle-row').each(function() {
+				    const activeRow = $('#puzzle-table .puzzle-row.active');
+    				    if (activeRow.length) {	//ModifY4: act only on puzzle-row.active
 				        const verbText = $(this).find('.verb .text').text().trim();
 				        const tenseText = $(this).find('.tense .text').text().trim();
 				        const pronounText = $(this).find('.pronoun .text').text().trim();
