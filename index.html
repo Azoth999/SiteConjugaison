@@ -1048,15 +1048,13 @@
 				        if (verbText || tenseText || pronounText) {
 				            isComplete = true;
 				        }
+					    
+					if (isComplete) {
+				            inputField.removeAttr('disabled');
+				    	} else {
+					    inputField.attr('disabled', 'disabled');
+				    	}
 				    });		//ModifY2: Changed ! to = and isComplete = false -> true
-
-				    if (isComplete) {
-				        inputField.removeAttr('disabled');
-				    } else {
-				        inputField.attr('disabled', 'disabled');
-				    }
-				    
-
 				}
 
 			});
