@@ -971,7 +971,8 @@
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun .text').html($(e.currentTarget).html());
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').addClass('puzzle-connected');
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').removeClass('grayscale');
-							checkPuzzleCompletion();	//ModifY: checkPuzzle call add
+							var rowId = $(this).closest('.puzzle-row').attr('id'); //ModifY5
+							checkPuzzleCompletion(rowId);	//ModifY: checkPuzzle call add
 						},200);
 					});
 				}//pronounRowClick(e)
@@ -984,7 +985,8 @@
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense .text').html($(e.currentTarget).html());
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').addClass('puzzle-connected');
 							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').removeClass('grayscale');
-							checkPuzzleCompletion();	//ModifY: checkPuzzle call add
+							var rowId = $(this).closest('.puzzle-row').attr('id'); //ModifY5
+							checkPuzzleCompletion(rowId);	//ModifY: checkPuzzle call add
 						},200);
 					});
 				}//tenseClick(e)
@@ -1037,7 +1039,7 @@
 					});
 				}//choiceToggleClick()
 
-				function checkPuzzleCompletion() {	//ModifY: Added function checkPuzzle
+				function checkPuzzleCompletion(rowId) {	//ModifY: Added function checkPuzzle
 				    let isComplete = false;
 				    const row = $(`#${rowId}`);		//Modify5
 				    const verbText = row.find('.verb .text').text().trim();
@@ -1054,7 +1056,7 @@
 				    	} else {
 					    inputField.attr('disabled', 'disabled');
 				    	}
-				    });		//ModifY2: Changed ! to = and isComplete = false -> true
+				    };		//ModifY2: Changed ! to = and isComplete = false -> true
 				}
 
 			});
