@@ -946,48 +946,48 @@
 					var pronounIndexSelected = $($(e.currentTarget).attr('id').split('-')).get(2);
 
 					var uniquePronounList = new Object();
-					$.each(pronounList, function( indexPronoun, pronoun ) {
-						$.each(pronoun.end, function( index, value ) {
+					$.each(pronounList, function(indexPronoun, pronoun) {
+						$.each(pronoun.end, function(index, value) {
 							if(!uniquePronounList[value] && indexPronoun != pronounIndexSelected){
 								uniquePronounList[value] = false;
-							}else if(indexPronoun == pronounIndexSelected){
+							} else if(indexPronoun == pronounIndexSelected){
 								uniquePronounList[value] = true;
-							}//else if
+							}
 						});
 					});
 
-					$.each(uniquePronounList, function( index, active ) {
+					$.each(uniquePronounList, function(index, active) {
 						$('#puzzle-pieces-pronoun .puzzle-pieces-items').append(
 							'<button type="button" class="btn btn-primary btn-square choice '+
-							(!active?'disabled':'ready')+
-							' text-uppercase" data-target="'+$(e.currentTarget).attr('id')+'">'+index+'</button>'
+							(!active ? 'disabled' : 'ready') +
+							' text-uppercase" data-target="' + $(e.currentTarget).attr('id') + '">' + index + '</button>'
 						);
 					});
 
-					$('#puzzle-pieces-pronoun .puzzle-pieces-items .choice').not( ".disabled" ).click(function(e){
+					$('#puzzle-pieces-pronoun .puzzle-pieces-items .choice').not(".disabled").click(function(e) {
 						var targetRow = $('#puzzle-table .puzzle-row.active').get(0);
-						$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').removeClass('puzzle-connected');
-						window.setTimeout(function(){
-							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun .text').html($(e.currentTarget).html());
-							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').addClass('puzzle-connected');
-							$('#puzzle-table #'+$(targetRow).attr('id')+' .pronoun').removeClass('grayscale');
-							var rowId = $(this).closest('.puzzle-row').attr('id'); //ModifY5
-							checkPuzzleCompletion(rowId);	//ModifY: checkPuzzle call add
-						},200);
+						var rowId = $(targetRow).attr('id'); // Correction ici
+						$('#puzzle-table #'+ rowId +' .pronoun').removeClass('puzzle-connected');
+						window.setTimeout(() => {
+							$('#puzzle-table #'+ rowId +' .pronoun .text').html($(e.currentTarget).html());
+							$('#puzzle-table #'+ rowId +' .pronoun').addClass('puzzle-connected');
+							$('#puzzle-table #'+ rowId +' .pronoun').removeClass('grayscale');
+							checkPuzzleCompletion(rowId); // Appel correct ici
+						}, 200);
 					});
 				}//pronounRowClick(e)
 
-				function tenseClick(){
-					$('#puzzle-pieces-tense .puzzle-pieces-items .choice').not( ".disabled" ).click(function(e){
+				function tenseClick() {
+					$('#puzzle-pieces-tense .puzzle-pieces-items .choice').not(".disabled").click(function(e) {
 						var targetRow = $('#puzzle-table .puzzle-row.active').get(0);
-						$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').removeClass('puzzle-connected');
-						window.setTimeout(function(){
-							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense .text').html($(e.currentTarget).html());
-							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').addClass('puzzle-connected');
-							$('#puzzle-table #'+$(targetRow).attr('id')+' .tense').removeClass('grayscale');
-							var rowId = $(this).closest('.puzzle-row').attr('id'); //ModifY5
-							checkPuzzleCompletion(rowId);	//ModifY: checkPuzzle call add
-						},200);
+						var rowId = $(targetRow).attr('id'); // Correction ici
+						$('#puzzle-table #'+ rowId +' .tense').removeClass('puzzle-connected');
+						window.setTimeout(() => {
+							$('#puzzle-table #'+ rowId +' .tense .text').html($(e.currentTarget).html());
+							$('#puzzle-table #'+ rowId +' .tense').addClass('puzzle-connected');
+							$('#puzzle-table #'+ rowId +' .tense').removeClass('grayscale');
+							checkPuzzleCompletion(rowId); // Appel correct ici
+						}, 200);
 					});
 				}//tenseClick(e)
 
@@ -1047,9 +1047,9 @@
 				    const pronounText = row.find('.pronoun .text').text().trim();
 				    const inputField = row.find('.verb-control');
 					    
-				        if (verbText || tenseText || pronounText) {
-				            isComplete = true;
-				        }
+				    if (verbText || tenseText || pronounText) {
+				        isComplete = true;
+				    }
 					    
 					if (isComplete) {
 				            inputField.removeAttr('disabled');
